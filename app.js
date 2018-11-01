@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sio = require('socket.io');
 var debug = require('debug')('pds:server');
-var models = new require('./model/models.js');
+var Product = require('./model/product.js');
 
 //let session = require('express-session');
 
@@ -52,8 +52,7 @@ io.sockets.on('connection', function (socket) {
         socket.emit('isLoading' , 'visible');
         //just for test
         //loading more data
-        models.product.getProductView("test","tfsdfksjdflksqjhdfl","img");
-        socket.emit('newObject',msg+"test");
+        socket.emit('newObject',Product.getProductView("Test","sdfgkdsbglkzdglfj","sdfsklqjhfl")+"test");
         socket.emit('isLoading',"hidden");
     });
 });
