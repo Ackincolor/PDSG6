@@ -4,12 +4,17 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sio = require('socket.io');
+var debug = require('debug')('pds:server');
+var models = new require('./model/models.js');
+
+//let session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 var server = app.listen(3000);
+server.on('listening', onListening);
 var io = sio.listen(server);
 
 // view engine setup
@@ -42,6 +47,21 @@ app.use(function(err, req, res, next) {
 });
 io.sockets.on('connection', function (socket) {
    console.log("hello");
+    socket.on('loadMore', function(msg){
+      console.log(msg);
+        socket.emit('isLoading' , 'visible');
+        //just for test
+        //loading more data
+        models.product.getProductView("test","tfsdfksjdflksqjhdfl","img");
+        socket.emit('newObject',msg+"test");
+        socket.emit('isLoading',"hidden");
+    });
 });
-
+function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+}
 module.exports = app;
