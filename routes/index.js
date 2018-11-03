@@ -3,19 +3,22 @@ var router = express.Router();
 
 
 /* GET home page. */
-router.get('/product', function(req, res, next) {
-  var user = {
-    name : "testUser",
-    photo: "http://sdfqslkfdjhskjdf",
-  }
-  res.render('product', { title: 'Express' , user : user});
-});
+
 router.get('/' , function(req,res,next) {
-    var user = {
-        name : "testUserIndex",
-        photo: "http://sdfqslkfdjhskjdf",
+    sess = res.session;
+    if(sess.user.name) {
+        res.render('index', {title: 'PhyGIT Accueil', user: sess.user});
+    }else{
+        res.render('index', {title:'PhyGIT Accueil',user:null})
     }
-  res.render('index', { title: 'PhyGIT Accueil',user : user});
+
+});
+router.get('/register', function(req,res,next) {
+    res.render('register', {title: 'PhyGIT Register',user:{}});
+})
+router.post('/register', function(req,res,next) {
+    console.log(req.body.name);
+    res.redirect('/users/login');
 })
 
 module.exports = router;

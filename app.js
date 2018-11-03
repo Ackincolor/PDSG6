@@ -2,33 +2,44 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 var sio = require('socket.io');
 var debug = require('debug')('pds:server');
 var {Product} = require('./model/models.js');
 
+var bodyParser = require('body-parser');
+
 //let session = require('express-session');
-
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
+var usersRouter = require('./routes/users');
 var app = express();
 var server = app.listen(3000);
 server.on('listening', onListening);
-var io = sio.listen(server);
 
+var io = sio.listen(server);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
 
+app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(session(
+    {
+        secret: 'Pour le PDS',
+        saveUninitialized: false,
+        resave: false
+    }
+));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
