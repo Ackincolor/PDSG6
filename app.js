@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sio = require('socket.io');
 var debug = require('debug')('pds:server');
-var Product = require('./model/product.js');
+var {Product} = require('./model/models.js');
 
 //let session = require('express-session');
 
@@ -47,15 +47,30 @@ app.use(function(err, req, res, next) {
 });
 io.sockets.on('connection', function (socket) {
    console.log("hello");
-    socket.on('loadMore', function(msg){
-      console.log(msg);
-        socket.emit('isLoading' , 'visible');
-        //just for test
-        //loading more data
-        socket.emit('newObject',Product.getProductView("Test","sdfgkdsbglkzdglfj","sdfsklqjhfl")+"test");
-        socket.emit('isLoading',"hidden");
-    });
-});
+    socket.on('loadMore', function(value){
+        console.log(value);
+
+            socket.emit('isLoading', 'visible');
+            //just for test
+            //loading more data
+            Product.getProduct(function (err, rows) {
+                if(err==null) {
+                    retour = "";
+                    for (row of rows) {
+                        retour += Product.getProductView(row.Name, row.Description, row.img);
+                    }
+                    socket.emit('newObject', retour);
+                    socket.emit('isLoading', "hidden");
+                }else
+                {
+                    console.log(rows);
+                    socket.emit('newObject', "ERROR !!!");
+                    socket.emit('isLoading', "hidden");
+                }
+            });
+        })
+    }
+);
 function onListening() {
     var addr = server.address();
     var bind = typeof addr === 'string'
@@ -63,4 +78,6 @@ function onListening() {
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
 }
-module.exports = app;
+module.exports = {app : app,
+    sockets : io.sockets,
+    };
