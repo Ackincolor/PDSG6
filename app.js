@@ -51,9 +51,7 @@ io.sockets.on('connection', function (socket) {
             socket.emit('isLoading', 'visible');
             //just for test
             //loading more data
-            console.log("avant :"+value);
             value = JSON.parse(value);
-            console.log(value);
             Product.getProduct(value.start,value.number,function (err, rows) {
                 if(err==null) {
                     retour = "";

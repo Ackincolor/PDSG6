@@ -1,0 +1,16 @@
+<%- include("./headers/header",{title:title,user : user}) %>
+<script src="javascripts/loadingModel.js"></script>
+<div class="container" style="margin-top:30px">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <h1>Test Async load object With Socket.io</h1>
+    <div id="listMessage">
+        <div id="realList" class="container">
+
+        </div>
+    </div>
+    <form id="loadMore" action="">
+        <input id="m" autocomplete="off" value="3" style="visibility: hidden"/><button>LoadMore</button>
+    </form>
+</div>
+<%- include("./headers/footer",{title:"your_title"}) %>
