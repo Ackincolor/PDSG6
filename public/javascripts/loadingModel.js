@@ -1,4 +1,6 @@
 var socket = io.connect('http://localhost:3000');
+var nextProduct = 0;
+//recevoir un objet du serveur
 socket.on('newObject', (data) => {
     console.log(data);
     addNewObject(data);
@@ -15,11 +17,10 @@ socket.on('isLoading', (data) =>
 
 $(function () {
     $('#loadMore').submit(function(){
-        socket.emit('loadMore', $('#m').val());
-        $('#m').val('');
+        socket.emit('loadMore', "{\"number\": "+$('#m').val()+",\"start\": "+nextProduct+"}");
         return false;
     });
 });
 function addNewObject(data) {
-    $('#realList').append('<li>'+data+'</li>');
+    $('#realList').append('<div class="row">'+data+'</div>');
 }

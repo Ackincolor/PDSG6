@@ -1,6 +1,6 @@
 var util = require("util");
 var database = require('../utils/database.js');
-template = "<div class=\"card\" style=\"width: 18rem;\">\n" +
+template = "<div class=\"card col-sm\" style=\"width: 18rem;\">\n" +
     "  <img class=\"card-img-top\" src=\"%s\" alt=\"Card image cap\">\n" +
     "  <div class=\"card-body\">\n" +
     "    <h5 class=\"card-title\">%s</h5>\n" +
@@ -11,11 +11,11 @@ template = "<div class=\"card\" style=\"width: 18rem;\">\n" +
 var Product = {};
 Product.getProductView = function(name,desc,img)
 {
-    return util.format(template,name,desc,img);
+    return util.format(template,img,name,desc);
 };
-Product.getProduct = async function(callback)
+Product.getProduct = async function(start,number,callback)
 {
-   database.execQuery("SELECT p.\"Name\",p.\"Description\",p.img FROM public.\"PRODUCT\" p",[], function (err, rows) {
+   database.execQuery("SELECT p.\"Name\",p.\"Description\",p.img FROM public.\"PRODUCT\" p LIMIT $1 OFFSET $2;",[number,start], function (err, rows) {
        if(!err) {
            callback(null,rows);
        }else{

@@ -48,12 +48,13 @@ app.use(function(err, req, res, next) {
 io.sockets.on('connection', function (socket) {
    console.log("hello");
     socket.on('loadMore', function(value){
-        console.log(value);
-
             socket.emit('isLoading', 'visible');
             //just for test
             //loading more data
-            Product.getProduct(function (err, rows) {
+            console.log("avant :"+value);
+            value = JSON.parse(value);
+            console.log(value);
+            Product.getProduct(value.start,value.number,function (err, rows) {
                 if(err==null) {
                     retour = "";
                     for (row of rows) {
