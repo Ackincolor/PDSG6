@@ -21,25 +21,26 @@ server.on('listening', onListening);
 var io = sio.listen(server);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-
+app.use(session(
+    {
+        secret: 'Pour le PDS',
+        saveUninitialized: false,
+        resave : false,
+        cookie: {}
+    }
+));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
-app.use(session(
-    {
-        secret: 'Pour le PDS',
-        saveUninitialized: false,
-        resave: false
-    }
-));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -63,11 +64,12 @@ io.sockets.on('connection', function (socket) {
             //just for test
             //loading more data
             value = JSON.parse(value);
-            Product.getProduct(value.start,value.number,function (err, rows) {
+            var p = new Product("bla","bla","bla");
+            p.getProduct(value.start,value.number,function (err, rows) {
                 if(err==null) {
                     retour = "";
                     for (row of rows) {
-                        retour += Product.getProductView(row.Name, row.Description, row.img);
+                        retour += p.getProductView(row.Name, row.Description, row.img);
                     }
                     socket.emit('newObject', retour);
                     socket.emit('isLoading', "hidden");

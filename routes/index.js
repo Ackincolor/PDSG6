@@ -5,13 +5,7 @@ var router = express.Router();
 /* GET home page. */
 
 router.get('/' , function(req,res,next) {
-    sess = res.session;
-    if(sess.user.name) {
-        res.render('index', {title: 'PhyGIT Accueil', user: sess.user});
-    }else{
-        res.render('index', {title:'PhyGIT Accueil',user:null})
-    }
-
+    res.render('index', {title: 'PhyGIT Accueil',user:{}});
 });
 router.get('/register', function(req,res,next) {
     res.render('register', {title: 'PhyGIT Register',user:{}});

@@ -13,8 +13,8 @@ module.exports = {
             .then(client => {
                 return client.query(text, params)
                     .then(res => {
-                        client.release()
                         callback(null,res.rows);
+                        client.release()
                     })
                     .catch(e => {
                         client.release();
